@@ -105,6 +105,24 @@ const Scene = () => {
             >
                 Hello World
             </Text>
+             <Text
+                position={[0, 20, 40]} 
+                fontSize={5} 
+                color="white" 
+                anchorX="center" 
+                anchorY="middle" 
+            >
+                Level up your
+            </Text>
+            <Text
+                position={[0, 15, 40]} 
+                fontSize={5} 
+                color="white" 
+                anchorX="center" 
+                anchorY="middle" 
+            >
+                NFT game
+            </Text>
             <BackStars cameraPositionRef={cameraPositionRef} />
             <PerpCam
                 setChunks={setChunks}
