@@ -23,7 +23,7 @@ const Hexagons = ({ cameraPositionRef }: { cameraPositionRef: React.MutableRefOb
   
   
   useFrame((_,delta) => {
-    hexagonRefs.current.forEach((hexagonRef, index) => {
+    hexagonRefs.current.forEach((hexagonRef) => {
       if (hexagonRef) {
         
         hexagonRef.rotation.z += scrollDirection === 'down' ? 1*delta : -1*delta;

@@ -1,5 +1,5 @@
 import { useThree, useFrame } from "@react-three/fiber";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect} from "react";
 import * as THREE from 'three';
 import { chunkSize } from "./Constants";
 
@@ -31,11 +31,9 @@ const PerpCam = ({
             if (cameraPositionRef.current.z <= 100 ){            
                 speedBoostRef.current = Math.max(0, speedBoostRef.current - delta * 2);
                 const speed = speedBoostRef.current * (cameraSpeedRef.current < 0 ? 1 : -1);
-                console.log(speed);
                 cameraRef.current.position.z = Math.min(100, cameraRef.current.position.z - speed);
                 cameraRef.current.position.z = Math.max(-60, cameraRef.current.position.z);
             } else {
-
                 const speed = -speedBoostRef.current;
                 cameraRef.current.position.y=cameraPositionRef.current.y
                 cameraRef.current.position.z=cameraPositionRef.current.z
