@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { chunkSize } from './Constants';
 
 const generateTerrain = (size: number, scale: number) => {
-    const geometry = new THREE.PlaneGeometry(size, size, size, size);
+    const geometry = new THREE.PlaneGeometry(size, size, size/2, size/2);
     geometry.rotateX(-Math.PI / 2);
 
     const vertices = geometry.attributes.position.array;

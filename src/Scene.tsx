@@ -6,6 +6,7 @@ import Terrain from './Terrain';
 import PerpCam from './PerpCam';
 import BackStars from './BackStars';
 import { chunkSize } from './Constants';
+import { Text } from '@react-three/drei';
 
 const Light = () => {
     const light1Ref = useRef<THREE.PointLight>(null);
@@ -25,17 +26,10 @@ const Light = () => {
             
             
             const distance = cameraPosition.length(); 
-            
-            
             const normalizedDistance = THREE.MathUtils.clamp(distance / 100, 0, 1);
-            
-            
             const orange = new THREE.Color(0xFFA500); 
             const purple = new THREE.Color(0x800080); 
-            
-            
             const interpolatedColor = interpolateColor(purple,orange, normalizedDistance);
-
             
             light1Ref.current.color.set(interpolatedColor);
             light2Ref.current.color.set(interpolatedColor);
@@ -58,18 +52,30 @@ const Scene = () => {
         { position: [0, 0, -chunkSize] },
     ]);
 
-    const cameraPositionRef = useRef(new THREE.Vector3(0, 20, 100));
-    const cameraSpeedRef = useRef(0.3); 
+    const cameraPositionRef = useRef(new THREE.Vector3(0, 100, 105));
+    const cameraSpeedRef = useRef(0.1); 
     const speedBoostRef = useRef(0); 
 
     useEffect(() => {
         const handleScroll = (event: WheelEvent) => {
+
             const scrollDirection = Math.sign(event.deltaY);
-            if(cameraPositionRef.current.z >= 100 && scrollDirection === -1) {
+            if(cameraPositionRef.current.y!=20){
+                speedBoostRef.current = event.deltaY*0.1; 
+                return;
+            }
+            if((cameraPositionRef.current.z === 105 && scrollDirection === -1 && cameraPositionRef.current.y===20)) {
+                cameraPositionRef.current.z=90;
+                return;
+            }
+            if(cameraPositionRef.current.z === 100 && scrollDirection === 1 && cameraPositionRef.current.y===20) {
+                speedBoostRef.current = event.deltaY*0.1; 
+                cameraPositionRef.current.y=40;
+                cameraPositionRef.current.z=105;
                 return;
             } 
-            const boostAmount = 0.3; 
-            speedBoostRef.current = Math.min(2, speedBoostRef.current + boostAmount); 
+            const boostAmount = 0.05; 
+            speedBoostRef.current = Math.min(0.7, speedBoostRef.current + boostAmount); 
             cameraSpeedRef.current = scrollDirection * Math.abs(cameraSpeedRef.current); 
         };
 
@@ -85,10 +91,20 @@ const Scene = () => {
             gl={{ antialias: true }}
         >
             <directionalLight position={[5, 10, 5]} intensity={0.5} castShadow />
+            
             <Light />
             {chunks.map((chunk, index) => (
                 <Terrain key={index} position={chunk.position} />
             ))}
+             <Text
+                position={[0, 100, -50]} 
+                fontSize={10} 
+                color="white" 
+                anchorX="center" 
+                anchorY="middle" 
+            >
+                Hello World
+            </Text>
             <BackStars cameraPositionRef={cameraPositionRef} />
             <PerpCam
                 setChunks={setChunks}

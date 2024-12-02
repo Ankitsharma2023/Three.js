@@ -1,8 +1,7 @@
 import { useThree, useFrame } from "@react-three/fiber";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as THREE from 'three';
 import { chunkSize } from "./Constants";
-
 
 const PerpCam = ({
     setChunks,
@@ -18,7 +17,9 @@ const PerpCam = ({
     const cameraRef = useRef<THREE.PerspectiveCamera>(null!);
     const { set } = useThree();
 
-    
+
+
+
     useEffect(() => {
         if (cameraRef.current) {
             set({ camera: cameraRef.current });
@@ -27,14 +28,25 @@ const PerpCam = ({
 
     useFrame((_, delta) => {
         if (cameraRef.current) {
-            
-            speedBoostRef.current = Math.max(0, speedBoostRef.current - delta * 2); 
-            const speed = (cameraSpeedRef.current + speedBoostRef.current) * (cameraSpeedRef.current < 0 ? -1 : 1);
-            
-            cameraRef.current.position.z =  Math.min(100,cameraRef.current.position.z-speed);
-            cameraRef.current.position.z =  Math.max(-60,cameraRef.current.position.z-speed);
-            
+            if (cameraPositionRef.current.z <= 100 ){            
+                speedBoostRef.current = Math.max(0, speedBoostRef.current - delta * 2);
+                const speed = speedBoostRef.current * (cameraSpeedRef.current < 0 ? 1 : -1);
+                console.log(speed);
+                cameraRef.current.position.z = Math.min(100, cameraRef.current.position.z - speed);
+                cameraRef.current.position.z = Math.max(-60, cameraRef.current.position.z);
+            } else {
+
+                const speed = -speedBoostRef.current;
+                cameraRef.current.position.y=cameraPositionRef.current.y
+                cameraRef.current.position.z=cameraPositionRef.current.z
+                cameraRef.current.position.y = Math.min(100, cameraRef.current.position.y - speed);
+                cameraRef.current.position.y = Math.max(20, cameraRef.current.position.y);
+                speedBoostRef.current=0;
+
+            }
+
             cameraPositionRef.current.copy(cameraRef.current.position);
+
 
             const cameraZ = cameraRef.current.position.z;
 
@@ -43,7 +55,7 @@ const PerpCam = ({
                     (chunk) => Math.abs(chunk.position[2]) + chunkSize > Math.abs(cameraZ)
                 );
 
-                while (updatedChunks.length < 5) {
+                while (updatedChunks.length < 2) {
                     const newChunkZ = updatedChunks[updatedChunks.length - 1].position[2] - chunkSize;
                     updatedChunks.push({ position: [0, 0, newChunkZ] });
                 }
@@ -53,6 +65,7 @@ const PerpCam = ({
         }
     });
 
-    return <perspectiveCamera ref={cameraRef} position={[0, 20, 100]} fov={75} />;
+    return <perspectiveCamera ref={cameraRef} position={[0, 100, 105]} fov={75} />;
 };
+
 export default PerpCam;
